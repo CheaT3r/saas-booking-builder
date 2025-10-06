@@ -1,179 +1,207 @@
-# Backend Structure Document
+# Backend Structure Document: saas-booking-builder
 
-This document outlines the backend architecture, hosting, and infrastructure for the **codeguide-starter** project. It uses plain language so anyone can understand how the backend is set up and how it supports the application.
+This document explains how the backend of the saas-booking-builder application is set up. It covers the overall design, the database, the APIs, hosting, security, and more, using plain language so that anyone can understand it.
+
+---
 
 ## 1. Backend Architecture
 
-- **Framework and Design Pattern**
-  - We use **Next.js API Routes** to handle all server-side logic. These routes live alongside the frontend code in the same repository, making development and deployment simpler.
-  - The backend follows a **layered pattern**:
-    1. **API Layer**: Receives requests (login, registration, data fetch).  
-    2. **Service Layer**: Contains the core business logic (user validation, password hashing).  
-    3. **Data Access Layer**: Talks to the database via a simple ORM (e.g., Prisma or TypeORM).
+**Overview**
+- The backend is built using Next.js, which combines server-side rendering, client-side pages, and API routes in one framework.
+- Under the hood, it runs on Node.js and TypeScript, giving us a modern JavaScript environment with extra safety checks.
 
-- **Scalability**
-  - Stateless API routes can scale horizontally—new instances can spin up on demand.  
-  - We can add caching or a message queue (e.g., Redis or RabbitMQ) without changing the core code.
+**Design Patterns and Structure**
+- We follow a layered approach:
+  - **Routes:** Endpoints defined under `app/api/` that handle incoming HTTP requests.
+  - **Controllers/Services:** Functions that process requests, apply business logic, and talk to the database.
+  - **ORM Layer:** Prisma is used to map our database tables to JavaScript objects and simplify queries.
 
-- **Maintainability**
-  - Code for each feature is grouped by route (authentication, dashboard).  
-  - A service layer separates complex logic from request handling.
+**Scalability, Maintainability, Performance**
+- **Serverless or Containerized Functions:** Each API route can scale independently as demand grows.
+- **Modular Code:** Splitting routes, services, and data access into separate files makes it easy to add new features or fix bugs.
+- **Caching and Edge Rendering:** We use built-in Next.js caching and edge functions (on Vercel or equivalent) for faster responses.
 
-- **Performance**
-  - Lightweight Node.js handlers keep response times low.  
-  - Future use of database connection pooling and Redis for caching repeated queries.
+---
 
 ## 2. Database Management
 
-- **Database Choice**
-  - We recommend **PostgreSQL** for structured data and reliable transactions.  
-  - In-memory caching can be added later with **Redis** for session tokens or frequently read data.
+**Technology Used**
+- Database type: Relational (SQL).
+- Specific system: PostgreSQL.
+- ORM: Prisma for schema management, migrations, and type-safe queries.
 
-- **Data Storage and Access**
-  - Use an ORM like **Prisma** or **TypeORM** to map JavaScript/TypeScript objects to database tables.
-  - Connection pooling ensures efficient use of database connections under load.
-  - Migrations track schema changes over time, keeping development, staging, and production in sync.
+**Data Handling Practices**
+- **Connection Pooling:** We use a limited number of database connections to avoid overload.
+- **Migrating & Seeding:** All schema changes go through versioned migrations. Initial or test data is loaded with seed scripts.
+- **Environment Variables:** Database URL and credentials are kept in environment variables, not in code.
 
-- **Data Practices**
-  - Passwords are never stored in plain text—they are salted and hashed with **bcrypt** before saving.
-  - All outgoing data is typed and validated to prevent malformed records.
+---
 
 ## 3. Database Schema
 
-### Human-Readable Format
+Below is a simple overview of our main tables and how they are structured. Each user can have multiple bookings, and multi-tenant support is built in via a `Tenant` table.
 
-- **Users**
-  - **id**: Unique identifier  
-  - **email**: User’s email address (unique)  
-  - **password_hash**: Securely hashed password  
-  - **created_at**: Account creation timestamp
+**Human-Readable Table Descriptions**
 
-- **Sessions**
-  - **id**: Unique session record  
-  - **user_id**: Links to a user  
-  - **token**: Random string for authentication  
-  - **expires_at**: When the token stops working  
-  - **created_at**: When the session was created
+- **Tenants**: Represents a customer organization or account. Fields:
+  - `id` (unique identifier)
+  - `name` (company or account name)
+  - `created_at` (timestamp)
 
-- **DashboardItems** *(optional for dynamic data)*
-  - **id**: Unique record  
-  - **title**: Item title  
-  - **content**: Item details  
-  - **created_at**: When the item was added
+- **Users**: Represents individuals who sign up and log in. Fields:
+  - `id` (unique identifier)
+  - `tenant_id` (links to the tenant they belong to)
+  - `email` (login address)
+  - `password_hash` (secure password storage)
+  - `role` (e.g., "admin" or "user")
+  - `created_at` (timestamp)
 
-### SQL Schema (PostgreSQL)
+- **Bookings**: Represents booking records created by users. Fields:
+  - `id` (unique identifier)
+  - `user_id` (who created the booking)
+  - `title` (short description)
+  - `start_time` (date and time)
+  - `end_time` (date and time)
+  - `details` (optional notes)
+  - `created_at` (timestamp)
+
+**SQL Schema (PostgreSQL)**
+
 ```sql
+-- Tenants table
+CREATE TABLE tenants (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Users table
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
+  tenant_id INTEGER NOT NULL REFERENCES tenants(id),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'user',
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Sessions table
-CREATE TABLE sessions (
+-- Bookings table
+CREATE TABLE bookings (
   id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(id) ON DELETE CASCADE,
-  token VARCHAR(255) UNIQUE NOT NULL,
-  expires_at TIMESTAMPTZ NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- Dashboard items table
-CREATE TABLE dashboard_items (
-  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
   title TEXT NOT NULL,
-  content TEXT,
-  created_at TIMESTAMPTZ DEFAULT now()
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ NOT NULL,
+  details TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```  
 
+---
+
 ## 4. API Design and Endpoints
 
-- **Approach**: We follow a **RESTful** style, grouping related endpoints under `/api` directories.
+We use RESTful API routes under `app/api/`. Each route handles JSON requests and responses.
 
-- **Key Endpoints**
-  - `POST /api/auth/register`  
-    • Accepts `{ email, password }`  
-    • Creates a new user and issues a session token  
-  - `POST /api/auth/login`  
-    • Accepts `{ email, password }`  
-    • Verifies credentials and returns a session token  
-  - `POST /api/auth/logout`  
-    • Invalidates the session token on the server  
-  - `GET /api/dashboard/data`  
-    • Requires a valid session  
-    • Returns user-specific data or dashboard items  
+**Authentication Endpoints**
+- POST `/api/auth/signup`  : Create a new user account (requires email and password).  
+- POST `/api/auth/signin`  : Log in (returns a secure token or cookie).  
+- POST `/api/auth/signout` : End the user session.
 
-- **Communication**
-  - Frontend sends JSON requests; backend replies with JSON and appropriate HTTP status codes.  
-  - Protected routes check for a valid session token (in cookies or Authorization header).
+**User & Session Endpoints**
+- GET `/api/auth/me`       : Get the current user’s profile.
+- PUT `/api/auth/password` : Change password (authenticated).
+
+**Booking Endpoints**
+- GET `/api/bookings`          : List all bookings for logged-in user.  
+- POST `/api/bookings`         : Create a new booking.  
+- GET `/api/bookings/[id]`     : Get details of a single booking.  
+- PUT `/api/bookings/[id]`     : Update an existing booking.  
+- DELETE `/api/bookings/[id]`  : Remove a booking.
+
+**How It Works**
+- Frontend pages send HTTP requests to these endpoints.  
+- Each endpoint calls a service that:  
+  1. Validates input.  
+  2. Checks authentication/authorization.  
+  3. Uses Prisma to query or update the database.  
+  4. Returns JSON with success or error details.
+
+---
 
 ## 5. Hosting Solutions
 
-- **Cloud Provider**:  
-  - **Vercel** (recommended) offers seamless Next.js deployments, auto-scaling, and built-in CDN.  
-  - Alternatively, **Netlify** or any Node.js-capable host will work.
+**Primary Hosting**
+- **Vercel** (recommended for Next.js):
+  - Automatically deploys on each code push.  
+  - Provides global edge network for fast content delivery.  
+  - Scales serverless functions on demand.
 
-- **Benefits**
-  - **Reliability**: Global servers and failover across regions.  
-  - **Scalability**: Auto-scale serverless functions based on traffic.  
-  - **Cost-Effectiveness**: Pay-per-use model means low cost for small projects.
+**Database Hosting**
+- **AWS RDS for PostgreSQL**:
+  - Managed backups, updates, and high availability.  
+  - Read replicas can be added for scaling reads.
+
+**Why This Setup?**
+- **Reliability:** Cloud providers handle hardware failures and network issues.  
+- **Scalability:** We only pay for what we use, and capacity can grow automatically.  
+- **Cost-effectiveness:** No need to buy or maintain physical servers.
+
+---
 
 ## 6. Infrastructure Components
 
-- **Load Balancer**
-  - Provided by the hosting platform—distributes API requests across function instances.
+- **Load Balancer / Edge Network:** Vercel’s edge functions automatically distribute traffic to the nearest region.
+- **Caching:**  
+  - Built-in Next.js ISR (Incremental Static Regeneration) for public pages.  
+  - Redis (optional) for session or query caching if needed.
+- **Content Delivery Network (CDN):** Static assets and images are served from global caches.
+- **Logging & Metrics:**  
+  - Vercel Analytics or third-party (Datadog, New Relic) for request performance.  
+  - Application logs (Winston or built-in) stored centrally.
 
-- **CDN (Content Delivery Network)**
-  - Vercel’s global edge network caches static assets (CSS, JS, images) for faster page loads.
-
-- **Caching**
-  - **Redis** (optional) for session storage or caching dashboard queries to reduce database load.
-
-- **Object Storage**
-  - For file uploads or backups, integrate with AWS S3 or similar services.
-
-- **Message Queue**
-  - In future, use **RabbitMQ** or **Kafka** for background tasks (e.g., email notifications).
+---
 
 ## 7. Security Measures
 
-- **Authentication & Authorization**
-  - Passwords hashed with **bcrypt** and salted.  
-  - Session tokens stored in secure, HttpOnly cookies or Authorization headers.  
-  - Protected endpoints verify tokens before proceeding.
+**Authentication & Authorization**
+- Passwords are hashed with bcrypt before saving.  
+- Sessions use JWTs stored in HTTP-only cookies to prevent client-side tampering.  
+- Role-based checks protect sensitive routes (e.g., only admins can invite new tenants).
 
-- **Data Encryption**
-  - **HTTPS/TLS** encrypts data in transit.  
-  - Database connections use SSL to encrypt data between the app and the database.
+**Data Protection**
+- All traffic is over HTTPS by default.  
+- Environment variables keep secrets (DB credentials, API keys) out of code.  
+- Database encryption at rest and in transit (standard on RDS).
 
-- **Input Validation**
-  - Every incoming request is validated (e.g., valid email format, password length) to prevent SQL injection or other attacks.
+**Best Practices**
+- Input validation on every endpoint to prevent injection attacks.  
+- Rate limiting on auth endpoints to block brute-force attempts.  
+- Regular dependency updates and security audits.
 
-- **Web Security Best Practices**
-  - Enable **CORS** policies to limit allowed origins.  
-  - Use **CSRF tokens** or same-site cookies to prevent cross-site requests.  
-  - Set secure headers with **Helmet** or a similar middleware.
+---
 
 ## 8. Monitoring and Maintenance
 
-- **Performance Monitoring**
-  - Integrate **Sentry** or **LogRocket** for real-time crash reporting and performance tracing.  
-  - Use Vercel’s built-in analytics to track request latencies and error rates.
+**Monitoring Tools**
+- **Uptime & Latency:** Vercel Insights, or external services like Pingdom.  
+- **Error Tracking:** Sentry or similar to catch exceptions in API routes and pages.  
+- **Metrics:** Grafana/Prometheus or cloud-native dashboards for CPU, memory, and DB stats.
 
-- **Logging**
-  - Structured logs (JSON) for all API requests and errors, shipped to a log management service like **Datadog** or **Logflare**.
+**Maintenance Practices**
+- Automated daily backups of the database.  
+- Scheduled security patching for dependencies.  
+- Versioned database migrations to evolve schema safely.  
+- Routine cleanup of old logs and temporary data.
 
-- **Health Checks**
-  - Define a `/health` endpoint that returns a 200 status if the service is up and the database is reachable.
-
-- **Maintenance Strategies**
-  - Automated migrations run on deploy to keep the database schema up to date.  
-  - Scheduled dependency audits and security scans (e.g., `npm audit`).
-  - Regular backups of the database (daily or weekly depending on usage).
+---
 
 ## 9. Conclusion and Overall Backend Summary
 
-The backend for **codeguide-starter** is built on Next.js API Routes and Node.js, paired with PostgreSQL for data and optional Redis for caching. It follows a clear layered architecture that keeps code easy to maintain and extend. With RESTful endpoints for authentication and data, secure practices like password hashing and HTTPS, and hosting on Vercel for scalability and global performance, this setup meets the project’s goals for a fast, secure, and developer-friendly foundation. Future enhancements—such as background job queues, advanced monitoring, or richer data models—can be added without disrupting the core structure.
+The saas-booking-builder backend is a modern, full-stack setup using Next.js, PostgreSQL, and Prisma. It follows best practices for:
+- **Scalability:** Serverless functions and managed databases grow with usage.
+- **Maintainability:** A clear separation of routes, services, and data access keeps code organized.
+- **Performance:** CDN edge delivery, caching, and fast database queries.
+- **Security:** Strong password handling, HTTPS, and role-based access.
+
+This architecture ensures that the application can handle many users over time, stay secure, and remain easy to maintain. It provides a solid foundation for a multi-tenant booking SaaS and can be extended with features like payment gateways, external notifications, and advanced analytics.

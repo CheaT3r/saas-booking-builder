@@ -1,14 +1,11 @@
 flowchart TD
-  Start[Landing Page]
-  SignUpPage[Sign Up Page]
-  SignInPage[Sign In Page]
-  AuthAPI[Authentication API Endpoint]
-  DashboardPage[Dashboard Page]
-  Start -->|Select Sign Up| SignUpPage
-  Start -->|Select Sign In| SignInPage
-  SignUpPage -->|Submit Credentials| AuthAPI
-  SignInPage -->|Submit Credentials| AuthAPI
-  AuthAPI -->|Success| DashboardPage
-  AuthAPI -->|Error| SignUpPage
-  AuthAPI -->|Error| SignInPage
-  DashboardPage -->|Click Logout| Start
+  Start[Start] --> SignUp[Sign up Page]
+  Start[Start] --> SignIn[Sign in Page]
+  SignUp --> AuthAPI[Authentication API]
+  SignIn --> AuthAPI
+  AuthAPI --> Dashboard[Dashboard]
+  Dashboard --> BookingBuilder[Booking Builder]
+  BookingBuilder --> BookingAPI[Booking API]
+  BookingAPI --> Dashboard
+  Dashboard --> Logout[Logout]
+  Logout --> Start
