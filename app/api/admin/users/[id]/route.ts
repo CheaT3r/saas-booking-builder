@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       data: updatedUser[0],
     });
   } catch (error) {
-    console.error(`Error updating user ${params.id}:`, error);
+    console.error(`Error updating user:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to update user' },
       { status: 500 }
@@ -129,7 +129,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       data: deletedUser[0],
     });
   } catch (error) {
-    console.error(`Error deleting user ${params.id}:`, error);
+    console.error(`Error deleting user:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to delete user' },
       { status: 500 }
