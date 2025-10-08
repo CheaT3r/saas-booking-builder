@@ -5,24 +5,27 @@ import Link from "next/link"
 import Image from "next/image"
 import { useSession } from "@/lib/auth-client"
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
+  IconCalendar,
+  IconBriefcase,
   IconUsers,
+  IconUserCircle,
+  IconSettings,
+  IconHelp,
+  IconSearch,
+  IconChartBar,
+  IconReport,
+  IconBuilding,
+  IconShield,
+  IconKey,
+  IconPackage,
+  IconCreditCard,
+  IconUser,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
+import { NavAdmin } from "@/components/nav-admin"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -39,126 +42,124 @@ const staticData = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Business",
+      url: "/dashboard/business",
+      icon: IconBuilding,
+    },
+    {
+      title: "Programări",
+      url: "/dashboard/bookings",
+      icon: IconCalendar,
+    },
+    {
+      title: "Servicii",
+      url: "/dashboard/services",
+      icon: IconBriefcase,
+    },
+    {
+      title: "Personal",
+      url: "/dashboard/staff",
+      icon: IconUsers,
+    },
+    {
+      title: "Clienți",
+      url: "/dashboard/clients",
+      icon: IconUserCircle,
+    },
+    {
+      title: "Billing",
+      url: "/dashboard/billing",
+      icon: IconCreditCard,
+    },
+  ],
+  adminNav: [
+    {
+      title: "Businesses",
+      url: "/admin/businesses",
+      icon: IconBuilding,
+    },
+    {
+      title: "Users",
+      url: "/admin/users",
+      icon: IconUser,
+    },
+    {
+      title: "API Keys",
+      url: "/admin/api-keys",
+      icon: IconKey,
+    },
+    {
+      title: "Packages",
+      url: "/admin/packages",
+      icon: IconPackage,
     },
     {
       title: "Analytics",
-      url: "#",
+      url: "/admin/analytics",
       icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
     },
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
+      title: "Setări",
+      url: "/dashboard/settings",
       icon: IconSettings,
     },
     {
-      title: "Get Help",
-      url: "#",
+      title: "Ajutor",
+      url: "/dashboard/help",
       icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
     },
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Rapoarte",
       url: "#",
-      icon: IconDatabase,
+      icon: IconChartBar,
     },
     {
-      name: "Reports",
+      name: "Statistici",
       url: "#",
       icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession()
+  const [isSuperAdmin, setIsSuperAdmin] = React.useState(false)
   
   const userData = session?.user ? {
     name: session.user.name || "User",
     email: session.user.email,
-    avatar: session.user.image || "/codeguide-logo.png",
+    avatar: session.user.image || "/favicon.ico",
   } : {
     name: "Guest",
     email: "guest@example.com", 
-    avatar: "/codeguide-logo.png",
+    avatar: "/favicon.ico",
   }
+
+  React.useEffect(() => {
+    const checkRole = async () => {
+      if (!session?.user) return;
+      
+      try {
+        const response = await fetch('/api/auth/role');
+        const result = await response.json();
+        if (result.success) {
+          setIsSuperAdmin(result.data.isSuperAdmin);
+        }
+      } catch (err) {
+        console.error('Error checking role:', err);
+      }
+    };
+    
+    checkRole();
+  }, [session]);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -170,8 +171,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href="/">
-                <Image src="/codeguide-logo.png" alt="CodeGuide" width={32} height={32} className="rounded-lg" />
-                <span className="text-base font-semibold font-parkinsans">CodeGuide</span>
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                  BZ
+                </div>
+                <span className="text-base font-semibold font-parkinsans">BIZNIZZ.EU</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -179,6 +182,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={staticData.navMain} />
+        {session?.user && isSuperAdmin && (
+          <NavAdmin items={staticData.adminNav} />
+        )}
         <NavDocuments items={staticData.documents} />
         <NavSecondary items={staticData.navSecondary} className="mt-auto" />
       </SidebarContent>

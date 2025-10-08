@@ -2,9 +2,17 @@
 
 ## 1. Project Overview
 
-**saas-booking-builder** is a Software-as-a-Service platform that lets businesses and individuals create, customize, and manage booking workflows without writing code. Built on Next.js with React and TypeScript, it provides user authentication, a personalized dashboard, and an API-driven backend. Users can sign up, log in, and immediately begin designing calendars, forms, and booking rules that fit their specific needs.
+**BIZNIZZ.EU** is a multi-tenant Software-as-a-Service platform designed for businesses that need to manage online bookings and appointments. Built with Next.js 15 (frontend) and NestJS (backend), the platform offers a complete solution for service-based businesses such as medical clinics, beauty salons, barbershops, dental offices, fitness centers, and more.
 
-The goal of this project is to remove the technical barrier for small to medium enterprises to offer online booking services. By combining server-side rendering (SSR), static site generation (SSG), and API routes in Next.js, the platform aims to be fast, secure, and easy to extend. Key success criteria include secure user authentication, a responsive booking builder interface, and reliable data persistence.
+The platform enables businesses to:
+- Accept online bookings 24/7
+- Manage staff schedules and availability
+- Configure services with custom pricing and duration
+- Send automated notifications and reminders
+- View analytics and reports
+- Operate with complete data isolation (multi-tenant architecture)
+
+The goal of BIZNIZZ.EU is to provide a professional, scalable, and secure booking management system that works out of the box for any service-based business. Key success criteria include secure multi-tenant architecture, intuitive booking interface, reliable notification system, and comprehensive analytics.
 
 ## 2. In-Scope vs. Out-of-Scope
 

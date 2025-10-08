@@ -1,4 +1,4 @@
-# Codespace Task Management Guide
+# BIZNIZZ.EU - Development Guide
 
 ## Documentation Available
 
