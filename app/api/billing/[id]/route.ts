@@ -80,7 +80,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       data: updatedSubscription[0],
     });
   } catch (error) {
-    console.error(`Error cancelling subscription ${params.id}:`, error);
+    console.error(`Error cancelling subscription:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to cancel subscription' },
       { status: 500 }
