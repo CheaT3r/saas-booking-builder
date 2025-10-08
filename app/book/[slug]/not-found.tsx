@@ -22,7 +22,7 @@ export default function NotFound() {
         </h2>
         
         <p className="text-lg text-slate-600 dark:text-slate-400 mb-8">
-          The business you're looking for doesn't exist or has been removed.
+          The business you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         
         <div className="space-y-3">

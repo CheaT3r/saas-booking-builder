@@ -30,13 +30,13 @@ export async function GET(request: NextRequest) {
       .orderBy(businesses.createdAt);
 
     // Remove duplicates
-    const uniqueBusinesses = allBusinesses.reduce((acc: any[], current) => {
+    const uniqueBusinesses = allBusinesses.reduce((acc: typeof allBusinesses, current) => {
       const existing = acc.find(item => item.business.id === current.business.id);
       if (!existing) {
         acc.push(current);
       }
       return acc;
-    }, []);
+    }, [] as typeof allBusinesses);
 
     // Map to simpler format
     const formattedBusinesses = uniqueBusinesses.map(item => ({

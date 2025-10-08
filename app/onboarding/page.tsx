@@ -55,11 +55,11 @@ export default function OnboardingPage() {
       } else {
         throw new Error(result.error || 'Failed to create business')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: err.message || "Failed to create business",
+        description: (err as Error).message || "Failed to create business",
       })
     } finally {
       setIsLoading(false)
@@ -90,7 +90,7 @@ export default function OnboardingPage() {
             Welcome to BIZNIZZ.EU!
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400">
-            Let's set up your business in just a few seconds
+            Let&apos;s set up your business in just a few seconds
           </p>
         </div>
 
@@ -103,7 +103,7 @@ export default function OnboardingPage() {
               {/* Business Name */}
               <div className="space-y-3">
                 <Label htmlFor="businessName" className="text-lg font-bold text-slate-700 dark:text-slate-300">
-                  What's your business name?
+                  What&apos;s your business name?
                 </Label>
                 <div className="relative group">
                   <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
               <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-200 dark:border-blue-900">
                 <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-blue-600" />
-                  What you'll get:
+                  What you&apos;ll get:
                 </h3>
                 <div className="grid gap-3">
                   <div className="flex items-center gap-3">

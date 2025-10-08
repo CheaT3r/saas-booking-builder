@@ -37,12 +37,12 @@ export default function AnalyticsPage() {
       } else {
         throw new Error(result.error || 'Failed to fetch analytics');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An unexpected error occurred');
       toast({
         variant: "destructive",
         title: "Error loading analytics",
-        description: err.message || "Failed to load analytics data.",
+        description: (err as Error).message || "Failed to load analytics data.",
       });
     } finally {
       setIsLoading(false);

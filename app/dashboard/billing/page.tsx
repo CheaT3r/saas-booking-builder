@@ -85,12 +85,12 @@ export default function BillingPage() {
       } else {
         throw new Error('Failed to fetch data');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An unexpected error occurred');
       toast({
         variant: "destructive",
         title: "Error loading billing data",
-        description: err.message || "Failed to load billing information.",
+        description: (err as Error).message || "Failed to load billing information.",
       });
     } finally {
       setIsLoading(false);
@@ -152,11 +152,11 @@ export default function BillingPage() {
       } else {
         throw new Error(result.error || 'Failed to create subscription');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error creating subscription",
-        description: err.message || "Failed to create subscription.",
+        description: (err as Error).message || "Failed to create subscription.",
       });
     }
   };
@@ -180,11 +180,11 @@ export default function BillingPage() {
       } else {
         throw new Error(result.error || 'Failed to cancel subscription');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error cancelling subscription",
-        description: err.message || "Failed to cancel subscription.",
+        description: (err as Error).message || "Failed to cancel subscription.",
       });
     }
   };

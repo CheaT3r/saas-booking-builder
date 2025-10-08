@@ -28,13 +28,13 @@ export async function GET(request: NextRequest) {
       .orderBy(user.createdAt);
 
     // Remove duplicates - keep only first occurrence of each user
-    const uniqueUsers = users.reduce((acc: any[], current) => {
+    const uniqueUsers = users.reduce((acc: typeof users, current) => {
       const existing = acc.find(item => item.user.id === current.user.id);
       if (!existing) {
         acc.push(current);
       }
       return acc;
-    }, []);
+    }, [] as typeof users);
 
     return NextResponse.json({
       success: true,

@@ -69,12 +69,12 @@ export default function BusinessManagementPage() {
       } else {
         throw new Error(result.error || 'Failed to fetch businesses');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An unexpected error occurred');
       toast({
         variant: "destructive",
         title: "Error loading businesses",
-        description: err.message || "Failed to load businesses.",
+        description: (err as Error).message || "Failed to load businesses.",
       });
     } finally {
       setIsLoading(false);
@@ -114,11 +114,11 @@ export default function BusinessManagementPage() {
       } else {
         throw new Error(result.error || 'Failed to create business');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error creating business",
-        description: err.message || "Failed to create business.",
+        description: (err as Error).message || "Failed to create business.",
       });
     }
   };
@@ -144,11 +144,11 @@ export default function BusinessManagementPage() {
       } else {
         throw new Error(result.error || 'Failed to update business');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error updating business",
-        description: err.message || "Failed to update business.",
+        description: (err as Error).message || "Failed to update business.",
       });
     }
   };
@@ -171,11 +171,11 @@ export default function BusinessManagementPage() {
       } else {
         throw new Error(result.error || 'Failed to delete business');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error deleting business",
-        description: err.message || "Failed to delete business.",
+        description: (err as Error).message || "Failed to delete business.",
       });
     }
   };

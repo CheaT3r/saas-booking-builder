@@ -18,7 +18,7 @@ interface PackageType {
   description?: string;
   priceMonthly: number;
   priceAnnually?: number;
-  features?: any;
+  features?: string[];
   maxUsers?: number;
   maxBookings?: number;
   apiAccess: boolean;

@@ -9,7 +9,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const { id } = params;
     const body = await request.json();
 
-    const updateData: any = {
+    const updateData: {
+      updatedAt: Date;
+      status?: string;
+      billingCycle?: string;
+      amount?: number;
+      nextBillingDate?: Date;
+      endDate?: Date;
+    } = {
       updatedAt: new Date(),
     };
 

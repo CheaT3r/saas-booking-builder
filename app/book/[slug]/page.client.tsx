@@ -28,7 +28,7 @@ interface Business {
   website: string | null;
   primaryColor: string;
   accentColor: string;
-  workingHours: any;
+  workingHours: Record<string, { open: string; close: string; closed: boolean }>;
 }
 
 interface Service {
@@ -153,11 +153,11 @@ export default function BookingPageClient({ business, services, staff }: Props) 
       } else {
         throw new Error(bookingResult.error || 'Failed to create booking');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Booking Failed",
-        description: err.message || "Failed to create your booking. Please try again.",
+        description: (err as Error).message || "Failed to create your booking. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -281,7 +281,7 @@ export default function BookingPageClient({ business, services, staff }: Props) 
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {business.workingHours && Object.entries(business.workingHours).map(([day, hours]: [string, any]) => (
+                  {business.workingHours && Object.entries(business.workingHours).map(([day, hours]) => (
                     <div key={day} className="flex items-center justify-between text-sm py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
                       <span className="font-semibold capitalize">{day}</span>
                       {hours.closed ? (

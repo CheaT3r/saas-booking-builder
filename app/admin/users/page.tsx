@@ -96,12 +96,12 @@ export default function UsersPage() {
       } else {
         throw new Error(result.error || 'Failed to fetch users');
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An unexpected error occurred');
       toast({
         variant: "destructive",
         title: "Error loading users",
-        description: err.message || "Failed to load users.",
+        description: (err as Error).message || "Failed to load users.",
       });
     } finally {
       setIsLoading(false);
@@ -140,11 +140,11 @@ export default function UsersPage() {
       } else {
         throw new Error(result.error || 'Failed to update user');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error updating user",
-        description: err.message || "Failed to update user.",
+        description: (err as Error).message || "Failed to update user.",
       });
     }
   };
@@ -167,11 +167,11 @@ export default function UsersPage() {
       } else {
         throw new Error(result.error || 'Failed to delete user');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Error deleting user",
-        description: err.message || "Failed to delete user.",
+        description: (err as Error).message || "Failed to delete user.",
       });
     }
   };

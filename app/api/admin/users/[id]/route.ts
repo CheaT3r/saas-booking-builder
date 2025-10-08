@@ -57,7 +57,13 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const { id } = params;
     const body = await request.json();
 
-    const updateData: any = {
+    const updateData: {
+      updatedAt: Date;
+      name?: string;
+      email?: string;
+      emailVerified?: boolean;
+      image?: string;
+    } = {
       updatedAt: new Date(),
     };
 

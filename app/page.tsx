@@ -725,7 +725,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-slate-700 dark:text-slate-300 mb-6 text-lg leading-relaxed">
-                "BIZNIZZ.EU ne-a transformat complet modul în care gestionăm programările. Clienții adoră cât de ușor este să facă rezervări online!"
+                &ldquo;BIZNIZZ.EU ne-a transformat complet modul în care gestionăm programările. Clienții adoră cât de ușor este să facă rezervări online!&rdquo;
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
@@ -746,7 +746,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-slate-700 dark:text-slate-300 mb-6 text-lg leading-relaxed">
-                "Sistemul de notificări automate a redus dramatic numărul de no-show-uri. ROI-ul a fost incredibil de rapid!"
+                &ldquo;Sistemul de notificări automate a redus dramatic numărul de no-show-uri. ROI-ul a fost incredibil de rapid!&rdquo;
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
@@ -767,7 +767,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-slate-700 dark:text-slate-300 mb-6 text-lg leading-relaxed">
-                "Interfața este intuitivă și ușor de folosit. Echipa s-a adaptat imediat, iar rapoartele ne ajută enorm!"
+                &ldquo;Interfața este intuitivă și ușor de folosit. Echipa s-a adaptat imediat, iar rapoartele ne ajută enorm!&rdquo;
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">

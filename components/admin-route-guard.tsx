@@ -67,7 +67,7 @@ export function AdminRouteGuard({ children }: AdminRouteGuardProps) {
               Access Denied
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">
-              You don't have permission to access the Super Admin Panel. This area is restricted to platform administrators only.
+              You don&apos;t have permission to access the Super Admin Panel. This area is restricted to platform administrators only.
             </p>
           </div>
           <div className="space-y-3">

@@ -80,12 +80,12 @@ export default function SettingsPage() {
         workingHours: data.workingHours || initialWorkingHours,
       });
       setBusinessId(data.id); // Save businessId for later use
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An unexpected error occurred');
       toast({
         variant: "destructive",
         title: "Eroare la încărcarea setărilor",
-        description: err.message || "Nu s-au putut încărca setările business-ului.",
+        description: (err as Error).message || "Nu s-au putut încărca setările business-ului.",
       });
     } finally {
       setLoading(false);
@@ -160,11 +160,11 @@ export default function SettingsPage() {
         title: "Setări salvate!",
         description: "Setările business-ului au fost actualizate cu succes.",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: "Eroare la salvarea setărilor",
-        description: err.message || "Nu s-au putut salva setările.",
+        description: (err as Error).message || "Nu s-au putut salva setările.",
       });
     } finally {
       setSaving(false);
