@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       data: userData[0],
     });
   } catch (error) {
-    console.error(`Error fetching user ${params.id}:`, error);
+    console.error(`Error fetching user:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch user' },
       { status: 500 }
