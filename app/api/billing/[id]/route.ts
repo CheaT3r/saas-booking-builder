@@ -4,9 +4,9 @@ import { subscriptions } from '@/db/schema/business';
 import { eq } from 'drizzle-orm';
 
 // PUT - Update subscription
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const updateData: {
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       data: updatedSubscription[0],
     });
   } catch (error) {
-    console.error(`Error updating subscription ${params.id}:`, error);
+    console.error(`Error updating subscription:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to update subscription' },
       { status: 500 }
@@ -53,9 +53,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE - Cancel subscription
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Soft delete: update status to cancelled and set end date
     const updatedSubscription = await db

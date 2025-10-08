@@ -8,9 +8,10 @@ import { headers } from 'next/headers';
 // GET - Get a single service by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: serviceId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -40,7 +41,7 @@ export async function GET(
       .from(services)
       .where(
         and(
-          eq(services.id, params.id),
+          eq(services.id, serviceId),
           eq(services.businessId, userBusinesses[0].id)
         )
       );
@@ -71,9 +72,10 @@ export async function GET(
 // PUT - Update a service
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: serviceId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -113,7 +115,7 @@ export async function PUT(
       })
       .where(
         and(
-          eq(services.id, params.id),
+          eq(services.id, serviceId),
           eq(services.businessId, userBusinesses[0].id)
         )
       )
@@ -145,9 +147,10 @@ export async function PUT(
 // DELETE - Delete a service
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: serviceId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -176,7 +179,7 @@ export async function DELETE(
       .delete(services)
       .where(
         and(
-          eq(services.id, params.id),
+          eq(services.id, serviceId),
           eq(services.businessId, userBusinesses[0].id)
         )
       )

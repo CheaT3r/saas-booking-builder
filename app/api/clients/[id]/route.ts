@@ -8,9 +8,10 @@ import { headers } from 'next/headers';
 // PUT - Update a client
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: clientId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -48,7 +49,7 @@ export async function PUT(
       })
       .where(
         and(
-          eq(clients.id, params.id),
+          eq(clients.id, clientId),
           eq(clients.businessId, userBusinesses[0].id)
         )
       )
@@ -77,9 +78,10 @@ export async function PUT(
 // DELETE - Delete a client
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: clientId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -108,7 +110,7 @@ export async function DELETE(
       .delete(clients)
       .where(
         and(
-          eq(clients.id, params.id),
+          eq(clients.id, clientId),
           eq(clients.businessId, userBusinesses[0].id)
         )
       )

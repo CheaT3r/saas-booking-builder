@@ -6,10 +6,11 @@ import { eq } from 'drizzle-orm';
 // GET - Get a single API key by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const apiKey = await db.select().from(apiKeys).where(eq(apiKeys.id, params.id));
+    const { id } = await params;
+    const apiKey = await db.select().from(apiKeys).where(eq(apiKeys.id, id));
     
     if (apiKey.length === 0) {
       return NextResponse.json(
@@ -34,9 +35,10 @@ export async function GET(
 // PUT - Update an API key
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     
     const updatedApiKey = await db
@@ -49,7 +51,7 @@ export async function PUT(
         isActive: body.isActive,
         updatedAt: new Date(),
       })
-      .where(eq(apiKeys.id, params.id))
+      .where(eq(apiKeys.id, id))
       .returning();
 
     if (updatedApiKey.length === 0) {
@@ -75,12 +77,13 @@ export async function PUT(
 // DELETE - Delete an API key
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const deletedApiKey = await db
       .delete(apiKeys)
-      .where(eq(apiKeys.id, params.id))
+      .where(eq(apiKeys.id, id))
       .returning();
 
     if (deletedApiKey.length === 0) {

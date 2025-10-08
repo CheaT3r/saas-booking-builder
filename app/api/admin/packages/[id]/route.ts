@@ -6,10 +6,11 @@ import { eq } from 'drizzle-orm';
 // GET - Get a single package by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const pkg = await db.select().from(packages).where(eq(packages.id, params.id));
+    const { id: packageId } = await params;
+    const pkg = await db.select().from(packages).where(eq(packages.id, packageId));
     
     if (pkg.length === 0) {
       return NextResponse.json(
@@ -34,9 +35,10 @@ export async function GET(
 // PUT - Update a package
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: packageId } = await params;
     const body = await request.json();
     
     const updatedPackage = await db
@@ -54,7 +56,7 @@ export async function PUT(
         prioritySupport: body.prioritySupport,
         updatedAt: new Date(),
       })
-      .where(eq(packages.id, params.id))
+      .where(eq(packages.id, packageId))
       .returning();
 
     if (updatedPackage.length === 0) {
@@ -80,12 +82,13 @@ export async function PUT(
 // DELETE - Delete a package
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: packageId } = await params;
     const deletedPackage = await db
       .delete(packages)
-      .where(eq(packages.id, params.id))
+      .where(eq(packages.id, packageId))
       .returning();
 
     if (deletedPackage.length === 0) {

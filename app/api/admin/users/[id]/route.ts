@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import { checkIsSuperAdmin } from '@/lib/check-admin';
 
 // GET - Get user details
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const authCheck = await checkIsSuperAdmin();
     if (!authCheck.authorized) {
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     const userData = await db
       .select()
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT - Update user details
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const authCheck = await checkIsSuperAdmin();
     if (!authCheck.authorized) {
@@ -54,7 +54,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const updateData: {
@@ -99,7 +99,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE - Delete user (soft delete by disabling)
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const authCheck = await checkIsSuperAdmin();
     if (!authCheck.authorized) {
@@ -109,7 +109,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Actually delete the user (careful with this!)
     const deletedUser = await db

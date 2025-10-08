@@ -8,9 +8,10 @@ import { headers } from 'next/headers';
 // PUT - Update a staff member
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: staffId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -51,7 +52,7 @@ export async function PUT(
       })
       .where(
         and(
-          eq(staff.id, params.id),
+          eq(staff.id, staffId),
           eq(staff.businessId, userBusinesses[0].id)
         )
       )
@@ -80,9 +81,10 @@ export async function PUT(
 // DELETE - Delete a staff member
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: staffId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -111,7 +113,7 @@ export async function DELETE(
       .delete(staff)
       .where(
         and(
-          eq(staff.id, params.id),
+          eq(staff.id, staffId),
           eq(staff.businessId, userBusinesses[0].id)
         )
       )

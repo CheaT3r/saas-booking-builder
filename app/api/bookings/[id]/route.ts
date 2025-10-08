@@ -8,9 +8,10 @@ import { headers } from 'next/headers';
 // GET - Get a single booking by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: bookingId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -40,7 +41,7 @@ export async function GET(
       .from(bookings)
       .where(
         and(
-          eq(bookings.id, params.id),
+          eq(bookings.id, bookingId),
           eq(bookings.businessId, userBusinesses[0].id)
         )
       );
@@ -68,9 +69,10 @@ export async function GET(
 // PUT - Update a booking
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: bookingId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -112,7 +114,7 @@ export async function PUT(
       })
       .where(
         and(
-          eq(bookings.id, params.id),
+          eq(bookings.id, bookingId),
           eq(bookings.businessId, userBusinesses[0].id)
         )
       )
@@ -141,9 +143,10 @@ export async function PUT(
 // DELETE - Delete a booking
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: bookingId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -172,7 +175,7 @@ export async function DELETE(
       .delete(bookings)
       .where(
         and(
-          eq(bookings.id, params.id),
+          eq(bookings.id, bookingId),
           eq(bookings.businessId, userBusinesses[0].id)
         )
       )
