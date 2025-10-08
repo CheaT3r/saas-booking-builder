@@ -128,7 +128,6 @@ export default function BusinessesPage() {
           contactEmail: '',
           contactPhone: '',
           address: '',
-          isActive: true,
         });
       } else {
         toast({
