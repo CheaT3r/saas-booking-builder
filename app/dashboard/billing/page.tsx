@@ -30,6 +30,7 @@ interface Package {
   name: string;
   priceMonthly: number;
   priceAnnually: number | null;
+  isActive: boolean;
 }
 
 export default function BillingPage() {
