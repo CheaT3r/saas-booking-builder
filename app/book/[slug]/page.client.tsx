@@ -28,7 +28,7 @@ interface Business {
   website: string | null;
   primaryColor: string | null;
   accentColor: string | null;
-  workingHours: Record<string, { open: string; close: string; closed: boolean }>;
+  workingHours: Record<string, { open: string; close: string; closed: boolean }> | null;
 }
 
 interface Service {
@@ -169,7 +169,7 @@ export default function BookingPageClient({ business, services, staff }: Props) 
     if (!selectedDate) return [];
 
     const dayName = format(selectedDate, 'EEEE').toLowerCase();
-    const workingDay = business.workingHours?.[dayName as keyof typeof business.workingHours];
+    const workingDay = business.workingHours?.[dayName];
 
     if (!workingDay || workingDay.closed) return [];
 
