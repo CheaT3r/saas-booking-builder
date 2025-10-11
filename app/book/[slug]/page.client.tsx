@@ -26,8 +26,8 @@ interface Business {
   phone: string | null;
   email: string | null;
   website: string | null;
-  primaryColor: string;
-  accentColor: string;
+  primaryColor: string | null;
+  accentColor: string | null;
   workingHours: Record<string, { open: string; close: string; closed: boolean }>;
 }
 
@@ -200,8 +200,8 @@ export default function BookingPageClient({ business, services, staff }: Props) 
     <div 
       className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-blue-950/20 dark:to-purple-950/20"
       style={{
-        '--primary-color': business.primaryColor,
-        '--accent-color': business.accentColor,
+        '--primary-color': business.primaryColor || '#3b82f6',
+        '--accent-color': business.accentColor || '#8b5cf6',
       } as React.CSSProperties}
     >
       {/* Header/Hero Section */}
