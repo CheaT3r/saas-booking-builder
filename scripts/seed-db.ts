@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import { db } from '../db';
-import { packages, businesses, services, staff, clients, bookings } from '../db/schema/business';
+import { businesses, services, staff, clients, bookings } from '../db/schema/business';
 import { user as authUser } from '../db/schema/auth';
-import { userRoles, apiKeys } from '../db/schema/admin';
+import { userRoles, apiKeys, packages } from '../db/schema/admin';
 
 async function main() {
   console.log('🌱 Seeding database...\n');
